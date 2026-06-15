@@ -1,42 +1,67 @@
 package com.example.demo.service;
 
+import com.example.demo.dto.UserRequestDTO;
+import com.example.demo.dto.UserResponseDTO;
 import com.example.demo.exceptions.custom.UserNotFoundException;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.entity.User;
+import com.example.demo.mapper.UserMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
 public class DemoService {
+    private final UserMapper userMapper;
     private final UserRepository userRepository;
 
-    public DemoService(UserRepository userRepository) {
+    public DemoService(UserRepository userRepository, UserMapper userMapper) {
         this.userRepository = userRepository;
+        this.userMapper = userMapper;
     }
 
-    public User create(User user) {
-        return userRepository.save(user);
+    public UserResponseDTO create(UserRequestDTO dto) {
+        User user = userMapper.toEntity(dto);
+        User savedUser = userRepository.save(user);
+        return userMapper.toResponseDTO(savedUser);
     }
 
-    public List<User> getAll() {
-        return userRepository.findAll();
+    public List<UserResponseDTO> getAll() {
+        return userRepository.findAll()
+                .stream()
+                .map(userMapper::toResponseDTO)
+                .toList();
     }
 
-    public User getById(Long id) {
-        return userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("Usuário não encontrado"));
+    public UserResponseDTO getById(Long id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new UserNotFoundException("Usuário não encontrado"));
+
+        return userMapper.toResponseDTO(user);
     }
 
-    public User update(Long id, User user) {
-        User existingUser = userRepository.findById(id).orElseThrow();
+    public UserResponseDTO update(Long id, UserRequestDTO dto) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new UserNotFoundException("Usuário não encontrado"));
 
-        existingUser.setName(user.getName());
+        userMapper.updateUserFromDTO(dto, user);
 
-        return userRepository.save(existingUser);
+        User updated = userRepository.save(user);
+
+        return userMapper.toResponseDTO(updated);
     }
 
     public void delete(Long id) {
+        if (!userRepository.existsById(id)) {
+            throw new UserNotFoundException("Usuário não encontrado");
+        }
         userRepository.deleteById(id);
+    }
+
+    public User save(UserRequestDTO dto) {
+        User user = userMapper.toEntity(dto);
+
+        return userRepository.save(user);
     }
 
 
