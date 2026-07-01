@@ -1,7 +1,8 @@
 package com.example.demo.controller;
 
-import com.example.demo.dto.UserRequestDTO;
-import com.example.demo.dto.UserResponseDTO;
+import com.example.demo.dto.request.LoginUserRequestDTO;
+import com.example.demo.dto.request.RegisterUserRequestDTO;
+import com.example.demo.dto.response.RegisterUserResponseDTO;
 import com.example.demo.service.DemoService;
 
 import jakarta.validation.Valid;
@@ -20,30 +21,20 @@ public class DemoController {
         this.service = service;
     }
 
-    @GetMapping("/welcome")
-    public String welcome() {
-        return "Welcome to our system.";
-    }
-
     @GetMapping
-    public ResponseEntity<List<UserResponseDTO>> getAll() {
+    public ResponseEntity<List<RegisterUserResponseDTO>> getAll() {
         return ResponseEntity.ok(service.getAll());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<UserResponseDTO> getById(@PathVariable Long id) {
+    public ResponseEntity<RegisterUserResponseDTO> getById(@PathVariable Long id) {
         return ResponseEntity.ok(service.getById(id));
     }
 
-    @PostMapping
-    public ResponseEntity<UserResponseDTO> create(@Valid @RequestBody UserRequestDTO dto) {
-        return ResponseEntity.ok(service.create(dto));
-    }
-
     @PutMapping("/{id}")
-    public ResponseEntity<UserResponseDTO> update(
+    public ResponseEntity<RegisterUserResponseDTO> update(
             @PathVariable Long id,
-            @Valid @RequestBody UserRequestDTO dto) {
+            @Valid @RequestBody RegisterUserRequestDTO dto) {
 
         return ResponseEntity.ok(service.update(id, dto));
     }
@@ -51,6 +42,7 @@ public class DemoController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         service.delete(id);
+
         return ResponseEntity.noContent().build();
     }
 }

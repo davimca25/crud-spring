@@ -1,8 +1,9 @@
 package com.example.demo.mapper;
 
-import com.example.demo.dto.UserRequestDTO;
-import com.example.demo.dto.UserResponseDTO;
+import com.example.demo.dto.request.RegisterUserRequestDTO;
+import com.example.demo.dto.response.RegisterUserResponseDTO;
 import com.example.demo.entity.User;
+import jakarta.validation.Valid;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
 
@@ -10,9 +11,9 @@ import org.mapstruct.MappingTarget;
 public interface UserMapper {
 
     //@Mapping(source = "email", target = "email") é redundante
-    User toEntity(UserRequestDTO requestDTO);
+    User toEntity(@Valid RegisterUserRequestDTO requestDTO);
 
-    UserResponseDTO toResponseDTO(User user);
+    RegisterUserResponseDTO toResponseDTO(User user);
 
-    void updateUserFromDTO (UserRequestDTO requestDTO, @MappingTarget User user);
+    void updateUserFromDTO (RegisterUserRequestDTO requestDTO, @MappingTarget User user);
 }

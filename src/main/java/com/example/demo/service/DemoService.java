@@ -1,11 +1,14 @@
 package com.example.demo.service;
 
-import com.example.demo.dto.UserRequestDTO;
-import com.example.demo.dto.UserResponseDTO;
+ 
+import com.example.demo.dto.request.LoginUserRequestDTO;
+import com.example.demo.dto.request.RegisterUserRequestDTO;
+import com.example.demo.dto.response.RegisterUserResponseDTO;
 import com.example.demo.exceptions.custom.UserNotFoundException;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.entity.User;
 import com.example.demo.mapper.UserMapper;
+import jakarta.validation.Valid;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,27 +23,27 @@ public class DemoService {
         this.userMapper = userMapper;
     }
 
-    public UserResponseDTO create(UserRequestDTO dto) {
+    public RegisterUserResponseDTO create(@Valid RegisterUserRequestDTO dto) {
         User user = userMapper.toEntity(dto);
         User savedUser = userRepository.save(user);
         return userMapper.toResponseDTO(savedUser);
     }
 
-    public List<UserResponseDTO> getAll() {
+    public List<RegisterUserResponseDTO> getAll() {
         return userRepository.findAll()
                 .stream()
                 .map(userMapper::toResponseDTO)
                 .toList();
     }
 
-    public UserResponseDTO getById(Long id) {
+    public RegisterUserResponseDTO getById(Long id) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException("Usuário não encontrado"));
 
         return userMapper.toResponseDTO(user);
     }
 
-    public UserResponseDTO update(Long id, UserRequestDTO dto) {
+    public RegisterUserResponseDTO update(Long id, RegisterUserRequestDTO dto) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException("Usuário não encontrado"));
 
@@ -58,7 +61,7 @@ public class DemoService {
         userRepository.deleteById(id);
     }
 
-    public User save(UserRequestDTO dto) {
+    public User save(RegisterUserRequestDTO dto) {
         User user = userMapper.toEntity(dto);
 
         return userRepository.save(user);

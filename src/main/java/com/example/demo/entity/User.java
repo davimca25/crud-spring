@@ -1,6 +1,6 @@
 package com.example.demo.entity;
 
-import com.example.demo.dto.UserResponseDTO;
+import com.example.demo.dto.response.RegisterUserResponseDTO;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -33,7 +33,7 @@ public class User implements UserDetails {
         
     }
 
-    public User(UserResponseDTO data) {
+    public User(RegisterUserResponseDTO data) {
     }
 
     @Override
